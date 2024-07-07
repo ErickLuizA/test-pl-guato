@@ -1,0 +1,32 @@
+diff --git a/node_modules/react-native-international-phone-number/lib/index.js b/node_modules/react-native-international-phone-number/lib/index.js
+index 9646316..d8bb984 100644
+--- a/node_modules/react-native-international-phone-number/lib/index.js
++++ b/node_modules/react-native-international-phone-number/lib/index.js
+@@ -341,6 +341,7 @@ const PhoneInput = forwardRef(
+               <Text style={getFlagStyle(phoneInputStyles?.flag)}>
+                 {countryValue?.flag}
+               </Text>
++              <View style={[{flexDirection:'row', alignItems:'center'},phoneInputStyles?.caretContainer]}>
+               {customCaret || (
+                 <View style={phoneInputStyles?.caret}>
+                   <View
+@@ -373,6 +374,7 @@ const PhoneInput = forwardRef(
+               >
+                 {countryValue?.callingCode}
+               </Text>
++              </View>
+             </TouchableOpacity>
+             <TextInput
+               style={getInputStyle(theme, phoneInputStyles?.input)}
+diff --git a/node_modules/react-native-international-phone-number/lib/interfaces/phoneInputStyles.ts b/node_modules/react-native-international-phone-number/lib/interfaces/phoneInputStyles.ts
+index 561267b..412f6eb 100644
+--- a/node_modules/react-native-international-phone-number/lib/interfaces/phoneInputStyles.ts
++++ b/node_modules/react-native-international-phone-number/lib/interfaces/phoneInputStyles.ts
+@@ -8,6 +8,7 @@ export interface IPhoneInputStyles {
+   // Flag styles [Text]
+   flag?: StyleProp<TextStyle>;
+   // Caret (dropdown icon) styles [Text]
++  caretContainer?: StyleProp<TextStyle>;
+   caret?: StyleProp<TextStyle>;
+   // Divider between caret and callingCode [View]
+   divider?: StyleProp<ViewStyle>;

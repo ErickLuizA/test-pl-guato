@@ -1,7 +1,22 @@
 {
   "expo": {
-    "name": "test-pl-guato",
+    "name": "Guató",
     "slug": "test-pl-guato",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "splash": {
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#6759FF"
+    },
+    "icon": "./assets/icon.png",
+    "android": {
+      "package": "com.testplguato",
+      "adaptiveIcon": {
+        "backgroundColor": "#6759FF"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.testplguato"
+    }
   }
 }
