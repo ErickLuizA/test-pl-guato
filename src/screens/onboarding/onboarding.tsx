@@ -1,9 +1,9 @@
-import { Text, View } from 'react-native'
 import { Onboarding as OnboardingComponent } from '@/components/onboarding'
-import { useNavigation } from '@react-navigation/native'
-import { Storage } from '@/lib/storage'
 import { ONBOARDING_STORAGE_KEY } from '@/constants/storage'
+import { Storage } from '@/lib/storage'
 import { useTheme } from '@/providers'
+import { useNavigation } from '@react-navigation/native'
+import { ScrollView } from 'react-native'
 
 const DATA = [
   {
@@ -37,13 +37,13 @@ export function Onboarding() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <ScrollView style={{ flexGrow: 1, backgroundColor: colors.background }}>
       <OnboardingComponent
         data={DATA}
         finishButtonText="Get Started"
         onSkip={handleNavigateToSignIn}
         onFinish={handleNavigateToSignIn}
       />
-    </View>
+    </ScrollView>
   )
 }

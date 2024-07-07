@@ -1,11 +1,12 @@
+import { Loading } from '@/components/loading'
 import { useAuth, useTheme } from '@/providers'
 import { NavigationContainer } from '@react-navigation/native'
+import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
+import { useEffect } from 'react'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { AppNavigator } from './app-navigator'
 import { AuthNavigator } from './auth-navigator'
-import { useEffect } from 'react'
-import * as SplashScreen from 'expo-splash-screen'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 export function RootNavigator() {
   const { isAuthenticated, isLoading: isLoadingAuth } = useAuth()
@@ -18,6 +19,8 @@ export function RootNavigator() {
 
     SplashScreen.hideAsync()
   }, [isLoadingTheme, isLoadingAuth])
+
+  if (isLoadingAuth || isLoadingTheme) return <Loading />
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>

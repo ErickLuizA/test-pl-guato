@@ -1,25 +1,48 @@
+import { Icon } from '@/components/icon'
+import { Spacer } from '@/components/spacer'
+import { Text } from '@/components/text'
+import { useTheme } from '@/providers'
+import {
+  ForwardedRef,
+  Ref,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+} from 'react'
 import { Control, Controller } from 'react-hook-form'
 import { View } from 'react-native'
 import InternationalPhoneInput, {
   ICountry,
+  IPhoneInputRef,
 } from 'react-native-international-phone-number'
-import { Text } from '@/components/text'
-import { useTheme } from '@/providers'
-import { Spacer } from '@/components/spacer'
-import { Icon } from '@/components/icon'
+import { TextInputRef } from './text-input'
 
 interface PhoneInputProps {
+  nextInput?: () => void
   selectedCountry: ICountry
   control: Control<{ phoneNumber?: string }>
   setSelectedCountry: (value: ICountry) => void
 }
 
-export function PhoneInput({
-  control,
-  selectedCountry,
-  setSelectedCountry,
-}: PhoneInputProps) {
+export interface PhoneInputRef {
+  focus: () => void
+}
+
+export default forwardRef(PhoneInput) as (
+  props: PhoneInputProps & { ref?: Ref<PhoneInputRef> },
+) => ReturnType<typeof PhoneInput>
+
+function PhoneInput(
+  { control, nextInput, selectedCountry, setSelectedCountry }: PhoneInputProps,
+  ref: ForwardedRef<TextInputRef>,
+) {
   const { colors, isDark } = useTheme()
+
+  const inputRef = useRef<IPhoneInputRef>(null)
+
+  useImperativeHandle(ref, () => ({
+    focus: () => inputRef.current?.focus(),
+  }))
 
   return (
     <Controller
@@ -35,20 +58,27 @@ export function PhoneInput({
           <View>
             <Text bold>Phone Number</Text>
             <Spacer size={8} />
+            {/* @ts-ignore */}
             <InternationalPhoneInput
+              ref={inputRef}
               value={value}
               onBlur={onBlur}
               onChangePhoneNumber={onChange}
               theme={isDark ? 'dark' : 'light'}
               selectedCountry={selectedCountry}
               onChangeSelectedCountry={setSelectedCountry}
-              customCaret={<Icon name="chevron-down" color={colors.text} />}
+              customCaret={<Icon name="chevron-down" color={colors.select} />}
               placeholder="Phone Number"
               placeholderTextColor={colors.placeholder}
+              returnKeyType={nextInput ? 'next' : 'default'}
+              onSubmitEditing={() => {
+                nextInput?.()
+              }}
+              cursorColor={colors.primary}
               modalHeight="80%"
               phoneInputStyles={{
                 container: {
-                  borderWidth: hasError ? 1 : 0,
+                  borderWidth: 1,
                   borderColor: hasError ? colors.error : colors.card,
                   backgroundColor: colors.card,
                 },
@@ -58,7 +88,7 @@ export function PhoneInput({
                 caretContainer: {
                   flexDirection: 'row-reverse',
                   justifyContent: 'flex-end',
-                  marginRight: -24,
+                  marginRight: -16,
                 },
                 callingCode: {
                   color: colors.text,
@@ -66,6 +96,9 @@ export function PhoneInput({
                 },
                 input: {
                   color: colors.text,
+                },
+                flag: {
+                  marginLeft: -8,
                 },
               }}
               modalStyles={{

@@ -22,12 +22,17 @@ type Success = {
 }
 
 interface AuthContextProps {
+  user: User | null
+  guestUser: boolean
   isLoading: boolean
   isAuthenticated: boolean
   signOut: () => Promise<void>
   guestSignIn: () => Promise<void>
   signUp: (data: User) => Promise<Either<Failure, Success>>
-  signIn: (phoneNumber: number) => Promise<Either<Failure, Success>>
+  signIn: (
+    phoneCountryCode: number,
+    phoneNumber: number,
+  ) => Promise<Either<Failure, Success>>
   socialSignIn: (provider: SocialProvider) => Promise<Either<Failure, Success>>
 }
 
@@ -52,6 +57,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     setUser(null)
     setGuestUser(false)
+    Storage.removeItem(AUTH_STORAGE_KEY)
   }
 
   const signUp = async (data: User): Promise<Either<Failure, Success>> => {
@@ -62,7 +68,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       const userAlreadyExists = users.find(
         (user) =>
-          user.phoneNumber === data.phoneNumber || user.email === data.email,
+          (user.phoneNumber === data.phoneNumber &&
+            user.phoneCountryCode === data.phoneCountryCode) ||
+          user.email === data.email,
       )
 
       if (userAlreadyExists) {
@@ -88,6 +96,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   const signIn = async (
+    phoneCountryCode: number,
     phoneNumber: number,
   ): Promise<Either<Failure, Success>> => {
     await new Promise((resolve) => setTimeout(resolve, 500))
@@ -95,7 +104,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const users: User[] = (await Storage.getItem(USERS_STORAGE_KEY)) || []
 
-      const storedUser = users.find((user) => user.phoneNumber === phoneNumber)
+      const storedUser = users.find(
+        (user) =>
+          user.phoneNumber === phoneNumber &&
+          user.phoneCountryCode === phoneCountryCode,
+      )
 
       if (!storedUser) {
         return left({ message: 'Incorrect phone number!' })
@@ -105,6 +118,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       setUser({
         phoneNumber,
+        sex: storedUser.sex,
         email: storedUser.email,
         lastName: storedUser.lastName,
         firstName: storedUser.firstName,
@@ -133,6 +147,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       await Storage.setItem(AUTH_STORAGE_KEY, JSON.stringify(socialUser))
 
       setUser({
+        sex: socialUser.sex,
         email: socialUser.email,
         lastName: socialUser.lastName,
         firstName: socialUser.firstName,
@@ -178,9 +193,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   return (
     <AuthContext.Provider
       value={{
+        user,
         signUp,
         signIn,
         signOut,
+        guestUser,
         isLoading,
         guestSignIn,
         socialSignIn,

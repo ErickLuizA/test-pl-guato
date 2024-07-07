@@ -1,15 +1,15 @@
+import { SocialProvider } from '@/constants/enums'
 import { useTheme } from '@/providers'
-import AppleIcon from '../../../assets/icons/apple_icon.svg'
-import FacebookIcon from '../../../assets/icons/facebook_icon.svg'
-import GoogleIcon from '../../../assets/icons/google_icon.svg'
-import { SvgProps } from 'react-native-svg'
 import {
   ActivityIndicator,
   Pressable,
   PressableProps,
   StyleSheet,
 } from 'react-native'
-import { SocialProvider } from '@/constants/enums'
+import { SvgProps } from 'react-native-svg'
+import AppleIcon from '../../../assets/icons/apple_icon.svg'
+import FacebookIcon from '../../../assets/icons/facebook_icon.svg'
+import GoogleIcon from '../../../assets/icons/google_icon.svg'
 
 interface SocialIconProps extends PressableProps {
   provider: SocialProvider
@@ -27,6 +27,8 @@ const mapper = {
   [SocialProvider.Google]: (props: IconProps) => <GoogleIcon {...props} />,
   [SocialProvider.Facebook]: (props: IconProps) => <FacebookIcon {...props} />,
 }
+
+const SIZE = 28
 
 export function SocialIcon({ provider, loading, ...rest }: SocialIconProps) {
   const { colors, isDark } = useTheme()
@@ -50,7 +52,7 @@ export function SocialIcon({ provider, loading, ...rest }: SocialIconProps) {
       {loading ? (
         <ActivityIndicator color={colors.text} style={styles.loadingSize} />
       ) : (
-        <Component isDark={isDark} />
+        <Component isDark={isDark} height={SIZE} width={SIZE} />
       )}
     </Pressable>
   )
@@ -58,14 +60,14 @@ export function SocialIcon({ provider, loading, ...rest }: SocialIconProps) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 8,
+    padding: 10,
     borderWidth: 2,
     borderRadius: 12,
     alignSelf: 'center',
   },
 
   loadingSize: {
-    width: 24,
-    height: 24,
+    width: SIZE,
+    height: SIZE,
   },
 })

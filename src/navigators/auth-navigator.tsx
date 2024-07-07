@@ -1,7 +1,7 @@
 import { Loading } from '@/components/loading'
 import { ONBOARDING_STORAGE_KEY } from '@/constants/storage'
 import { Storage } from '@/lib/storage'
-import { useTheme } from '@/providers'
+import { useAuth, useTheme } from '@/providers'
 import { Onboarding } from '@/screens/onboarding'
 import { SignIn } from '@/screens/sign-in'
 import { SignUp } from '@/screens/sign-up'
@@ -18,6 +18,7 @@ const { Navigator, Screen } = createNativeStackNavigator<AuthStackParamList>()
 
 export function AuthNavigator() {
   const { colors } = useTheme()
+  const { isAuthenticated } = useAuth()
 
   const [isLoading, setIsLoading] = useState(true)
 
@@ -40,7 +41,7 @@ export function AuthNavigator() {
     }
 
     loadAsync()
-  }, [])
+  }, [isAuthenticated])
 
   if (isLoading) {
     return <Loading />

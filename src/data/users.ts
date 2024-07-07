@@ -5,6 +5,7 @@ type MockUser = Record<SocialProvider, User>
 
 export const MOCK_USERS: MockUser = {
   [SocialProvider.Google]: {
+    sex: 'male',
     lastName: 'Page',
     firstName: 'Larry',
     phoneCountryCode: 1,
@@ -12,6 +13,7 @@ export const MOCK_USERS: MockUser = {
     email: 'googleuser@google.com',
   },
   [SocialProvider.Facebook]: {
+    sex: 'male',
     lastName: 'Zuckerberg',
     firstName: 'Mark',
     phoneCountryCode: 1,
@@ -19,6 +21,7 @@ export const MOCK_USERS: MockUser = {
     email: 'facebookuser@meta.com',
   },
   [SocialProvider.Apple]: {
+    sex: 'male',
     lastName: 'Jobs',
     firstName: 'Steve',
     phoneCountryCode: 1,

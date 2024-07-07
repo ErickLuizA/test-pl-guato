@@ -1,8 +1,202 @@
 diff --git a/node_modules/react-native-international-phone-number/lib/index.js b/node_modules/react-native-international-phone-number/lib/index.js
-index 9646316..d8bb984 100644
+index 9646316..c915f74 100644
 --- a/node_modules/react-native-international-phone-number/lib/index.js
 +++ b/node_modules/react-native-international-phone-number/lib/index.js
-@@ -341,6 +341,7 @@ const PhoneInput = forwardRef(
+@@ -1,26 +1,27 @@
+ import React, {
++  forwardRef,
+   useEffect,
+-  useState,
++  useImperativeHandle,
+   useRef,
+-  forwardRef,
++  useState,
+ } from 'react';
+ import {
+-  View,
+   Text,
+-  TouchableOpacity,
+   TextInput,
++  TouchableOpacity,
++  View,
+ } from 'react-native';
+ import {
+-  CountryPicker,
+   CountryButton,
++  CountryPicker,
+ } from 'react-native-country-codes-picker';
+ 
+-import getInputMask from './utils/getInputMask';
+ import getAllCountries from './utils/getAllCountries';
+-import getCountriesByName from './utils/getCountriesByName';
+ import getCountriesByCallingCode from './utils/getCountriesByCallingCode';
++import getCountriesByName from './utils/getCountriesByName';
+ import getCountryByCca2 from './utils/getCountryByCca2';
+ import getCountryByPhoneNumber from './utils/getCountryByPhoneNumber';
++import getInputMask from './utils/getInputMask';
+ import {
+   getCountryNotFoundMessage,
+   getPhoneNumberInputPlaceholder,
+@@ -138,13 +139,9 @@ const PhoneInput = forwardRef(
+     function onSelect(country) {
+       setShow(false);
+ 
+-      if (ref) {
+-        setInputValue('');
+-      } else {
+-        onChangePhoneNumber('');
+-      }
++      onChangePhoneNumber('');
+       
+-      if (onChangeSelectedCountry || ref) {
++      if (onChangeSelectedCountry) {
+         const newValue = {
+           name: country.name,
+           cca2: country.code,
+@@ -152,12 +149,9 @@ const PhoneInput = forwardRef(
+           callingCode: country.dial_code,
+         };
+ 
+-        if (ref) {
+-          setCountryValue(newValue);
+-          updateRef('', newValue);
+-        } else {
+-          onChangeSelectedCountry(newValue);
+-        }
++  
++        onChangeSelectedCountry(newValue);
++        
+       }
+     }
+ 
+@@ -168,12 +162,9 @@ const PhoneInput = forwardRef(
+         if (matchingCountry) {
+           setDefaultCca2(matchingCountry.cca2);
+ 
+-          if (ref) {
+-            setCountryValue(matchingCountry);
+-            updateRef('', matchingCountry);
+-          } else {
++  
+             onChangeSelectedCountry(matchingCountry);
+-          }
++          
+ 
+           onChangeText(
+             phoneNumber.replace(matchingCountry.callingCode, ''),
+@@ -191,48 +182,32 @@ const PhoneInput = forwardRef(
+         customMask ? customMask : null
+       );
+ 
+-      if (ref) {
+-        setInputValue(res);
+-        updateRef(res, countryValue);
+-      } else {
++ 
+         onChangePhoneNumber(res);
+-      }
++      
+     }
+ 
+     useEffect(() => {
+       if (!countryValue && !defaultCountry) {
+         const defaultCountry = getCountryByCca2('BR');
+ 
+-        if (ref) {
+-          setCountryValue(defaultCountry);
+-          updateRef('', defaultCountry);
+-        } else {
+           onChangeSelectedCountry(defaultCountry);
+-        }
+-      } else {
+-        if (ref) {
+-          updateRef('', countryValue);
+-        }
++        
+       } 
+     }, []);
+ 
+     useEffect(() => {
+       if (defaultCountry) {
+-        if (ref) {
+-          setCountryValue(getCountryByCca2(defaultCountry));
+-          updateRef('', getCountryByCca2(defaultCountry));
+-        } else {
++
+           onChangeSelectedCountry(getCountryByCca2(defaultCountry));
+-        }
++        
+       }
+     }, [defaultCountry]);
+ 
+     useEffect(() => {
+-      if (ref) {
+-        setInputValue('');
+-      } else {
++
+         onChangePhoneNumber('');
+-      }
++      
+ 
+       if (defaultValue) {
+         const matchingCountry = getCountryByPhoneNumber(defaultValue);
+@@ -240,21 +215,15 @@ const PhoneInput = forwardRef(
+         if (matchingCountry) {
+           setDefaultCca2(matchingCountry.cca2);
+ 
+-          if (ref) {
+-            setCountryValue(matchingCountry);
+-            updateRef('', matchingCountry);
+-          } else {
++ 
+             onChangeSelectedCountry(matchingCountry);
+-          }
++          
+         } else {
+           setDefaultCca2(null);
+ 
+-          if (ref) {
+-            setCountryValue(null);
+-            updateRef('', null);
+-          } else {
++     
+             onChangeSelectedCountry(null);
+-          }
++          
+ 
+           onChangeText('', null);
+ 
+@@ -302,23 +271,16 @@ const PhoneInput = forwardRef(
+     }, [countryValue]);
+ 
+     useEffect(() => {
+-      if (!ref) {
+         setInputValue(rest.value);
+         setCountryValue(selectedCountry);
+-      }
+     }, [selectedCountry]);
+ 
+-    if (
+-      ref &&
+-      (rest.value ||
+-        onChangePhoneNumber ||
+-        selectedCountry ||
+-        onChangeSelectedCountry)
+-    ) {
+-      throw new Error(
+-        "Error: Don't use the useRef hook combined with the useState hook to manage the phoneNumber and selectedCountry values. Instead, choose to use just one of them (useRef or useState)."
+-      );
+-    } else {
++
++  useImperativeHandle(ref, () => ({
++    focus: () => textInputRef.current?.focus(),
++  }))
++
++
+       return (
+         <>
+           <View
+@@ -341,6 +303,7 @@ const PhoneInput = forwardRef(
                <Text style={getFlagStyle(phoneInputStyles?.flag)}>
                  {countryValue?.flag}
                </Text>
@@ -10,7 +204,7 @@ index 9646316..d8bb984 100644
                {customCaret || (
                  <View style={phoneInputStyles?.caret}>
                    <View
-@@ -373,6 +374,7 @@ const PhoneInput = forwardRef(
+@@ -373,6 +336,7 @@ const PhoneInput = forwardRef(
                >
                  {countryValue?.callingCode}
                </Text>
@@ -18,6 +212,27 @@ index 9646316..d8bb984 100644
              </TouchableOpacity>
              <TextInput
                style={getInputStyle(theme, phoneInputStyles?.input)}
+@@ -453,16 +417,14 @@ const PhoneInput = forwardRef(
+           ) : null}
+         </>
+       );
+-    }
++    
+   }
+ );
+ 
+ export default PhoneInput;
+ 
+ export {
+-  getAllCountries,
+-  getCountryByPhoneNumber,
+-  getCountryByCca2,
+-  getCountriesByCallingCode,
+-  getCountriesByName,
++  getAllCountries, getCountriesByCallingCode,
++  getCountriesByName, getCountryByCca2, getCountryByPhoneNumber
+ };
++
 diff --git a/node_modules/react-native-international-phone-number/lib/interfaces/phoneInputStyles.ts b/node_modules/react-native-international-phone-number/lib/interfaces/phoneInputStyles.ts
 index 561267b..412f6eb 100644
 --- a/node_modules/react-native-international-phone-number/lib/interfaces/phoneInputStyles.ts

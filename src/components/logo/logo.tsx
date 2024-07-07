@@ -1,7 +1,7 @@
+import { useTheme } from '@/providers'
 import { Dimensions, StyleSheet } from 'react-native'
 import DarkLogo from '../../../assets/icons/logo_dark.svg'
 import LightLogo from '../../../assets/icons/logo_light.svg'
-import { useTheme } from '@/providers'
 
 const { width } = Dimensions.get('window')
 
@@ -28,7 +28,7 @@ export function Logo() {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
-    marginBottom: -20,
+    marginBottom: -40,
     marginTop: -20,
   },
 })

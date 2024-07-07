@@ -3,5 +3,6 @@ export interface User {
   lastName: string
   firstName: string
   phoneNumber: number
+  sex: 'male' | 'female'
   phoneCountryCode: number
 }

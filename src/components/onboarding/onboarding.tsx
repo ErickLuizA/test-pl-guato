@@ -1,3 +1,5 @@
+import { Button, NextButton } from '@/components/button'
+import { Text } from '@/components/text'
 import { useRef, useState } from 'react'
 import {
   Dimensions,
@@ -5,14 +7,11 @@ import {
   ImageSourcePropType,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  Pressable,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native'
 import { Indicator } from './indicator'
-import { Button, NextButton } from '@/components/button'
 
 interface OnboardingProps {
   data: {

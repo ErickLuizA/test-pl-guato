@@ -1,3 +1,11 @@
+import { Theme } from '@/constants/enums'
+import { THEME_STORAGE_KEY } from '@/constants/storage'
+import { Storage } from '@/lib/storage'
+import {
+  DarkTheme,
+  DefaultTheme,
+  Theme as RNTheme,
+} from '@react-navigation/native'
 import {
   ReactNode,
   createContext,
@@ -6,15 +14,7 @@ import {
   useMemo,
   useState,
 } from 'react'
-import {
-  DarkTheme,
-  DefaultTheme,
-  Theme as RNTheme,
-} from '@react-navigation/native'
 import { useColorScheme } from 'react-native'
-import { Storage } from '@/lib/storage'
-import { THEME_STORAGE_KEY } from '@/constants/storage'
-import { Theme } from '@/constants/enums'
 
 export type ThemeColors = RNTheme['colors'] & {
   onPrimary: string
@@ -27,6 +27,7 @@ export type ThemeColors = RNTheme['colors'] & {
   error: string
   placeholder: string
   textVariant: string
+  select: string
 }
 
 interface ThemeContextProps {
@@ -59,6 +60,7 @@ const DARK_THEME_COLORS: ThemeColors = {
   error: '#F94449',
   placeholder: '#535763',
   textVariant: '#9A9FA5',
+  select: '#6F767E',
 }
 
 const LIGHT_THEME_COLORS = {
@@ -77,6 +79,7 @@ const LIGHT_THEME_COLORS = {
   error: '#F94449',
   placeholder: '#D1D3D4',
   textVariant: '#9A9FA5',
+  select: '#D1D3D4',
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {

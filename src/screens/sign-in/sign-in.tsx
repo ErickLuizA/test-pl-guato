@@ -1,18 +1,18 @@
+import { Button } from '@/components/button'
+import { PhoneInput } from '@/components/form'
+import { SocialIcon } from '@/components/icon'
 import { Logo } from '@/components/logo'
 import { Spacer } from '@/components/spacer'
 import { Text, Title } from '@/components/text'
+import { SocialProvider } from '@/constants/enums'
+import { useAuth, useTheme } from '@/providers'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useNavigation } from '@react-navigation/native'
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Alert, Dimensions, ScrollView, StyleSheet, View } from 'react-native'
-import * as Yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { Button } from '@/components/button'
-import { PhoneInput } from '@/components/form'
 import { ICountry } from 'react-native-international-phone-number'
-import { useAuth, useTheme } from '@/providers'
-import { SocialIcon } from '@/components/icon'
-import { useNavigation } from '@react-navigation/native'
-import { SocialProvider } from '@/constants/enums'
+import * as Yup from 'yup'
 
 const { width: WINDOW_WIDTH } = Dimensions.get('window')
 
@@ -31,6 +31,7 @@ export function SignIn() {
   const { control, setError, handleSubmit } = useForm<SignInForm>({
     mode: 'onBlur',
     resolver: yupResolver(schemaValidation),
+    defaultValues: { phoneNumber: '' },
   })
 
   const [selectedCountry, setSelectedCountry] = useState<undefined | ICountry>(
@@ -61,7 +62,10 @@ export function SignIn() {
   const handleOnSubmit = async (data: SignInForm) => {
     handleSetButtonLoading('signIn', true)
 
-    const response = await signIn(Number(data.phoneNumber))
+    const response = await signIn(
+      Number(selectedCountry.callingCode.replace('+', '')),
+      Number(data.phoneNumber.replace(/\s/g, '')),
+    )
 
     if (response.isLeft()) {
       setError('phoneNumber', { message: response.value.message })
@@ -75,7 +79,7 @@ export function SignIn() {
 
     const response = await socialSignIn(provider)
 
-    if (response.isLeft) {
+    if (response.isLeft()) {
       Alert.alert('Error', response.value.message)
     }
 
@@ -102,7 +106,7 @@ export function SignIn() {
 
       <Title>Sign In</Title>
 
-      <Spacer size={28} />
+      <Spacer size={30} />
 
       <PhoneInput
         control={control}
