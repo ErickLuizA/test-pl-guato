@@ -1,4 +1,5 @@
 import { Button, NextButton } from '@/components/button'
+import { Spacer } from '@/components/spacer'
 import { Text } from '@/components/text'
 import { useRef, useState } from 'react'
 import {
@@ -116,6 +117,8 @@ export function Onboarding({
               ) : (
                 <NextButton onPress={handlePressNext} />
               )}
+
+              <Spacer />
             </View>
           </View>
         )

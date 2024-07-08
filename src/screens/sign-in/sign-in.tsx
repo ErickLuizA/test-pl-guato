@@ -171,6 +171,8 @@ export function SignIn() {
           Sign Up
         </Text>
       </Text>
+
+      <Spacer size={40} />
     </ScrollView>
   )
 }
